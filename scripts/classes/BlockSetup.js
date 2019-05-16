@@ -395,7 +395,8 @@ class BlockSetup {
     this.initBlockOptions()
     this.blockTypes.forEach((block, index) => {
       this.list[index] = new Babylon.MeshBuilder.CreateBox(block, this.getBlockOptions(block), this.scene)
-
+      this.list[index].setEnabled(false)
+      console.log(this.list[index])
       switch (block) {
         case 'dirtTop': 
           this.list[index].material = this.materials.dirtTop
