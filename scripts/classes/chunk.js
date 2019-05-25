@@ -25,7 +25,7 @@ class Chunk {
           this.voxels[x][y][z] = new Block(TYPE_EMPTY, false, false)
           // this.voxels[x][y][z].alwaysSelectAsActiveMesh = true
 
-          if(y === 0 || y === 1) {
+          if(y === 0) {
             if(z === 0 || z === 15 || x === 0 || x === 15) {
               this.voxels[x][y][z] = new Block(TYPE_GRASS, true, false)
             } else {
@@ -74,15 +74,38 @@ class Chunk {
     }
   }
 
-  getNeighbours(x, y, z) {
+  getNeighbours(x, y, z, origin) {
     let result = []
 
     result.push(z < 15 ? this.voxels[x][y][z+1] : null)
     result.push(x < 15 ? this.voxels[x+1][y][z] : null)
     result.push(z > 0 ? this.voxels[x][y][z-1] : null)
     result.push(x > 0 ? this.voxels[x-1][y][z] : null)
+
+    if(origin) {
+      const originCoords = { x: origin.x, y: origin.y, z: origin.z }
+
+      if(objectsHaveSameVal({ x: x, y:y, z: z+1 }, originCoords)) {
+        result[0] = null
+      }
+      if(objectsHaveSameVal({ x: x+1, y: y, z: z}, originCoords)) {
+        result[1] = null
+      }
+      if(objectsHaveSameVal({ x: x, y: y, z: z-1}, originCoords)) {
+        result[2] = null
+      }
+      if(objectsHaveSameVal({ x: x-1, y: y, z: z}, originCoords)) {
+        result[3] = null
+      }
+    }
     
     return result
+  }
+
+  getNeighboursNeighbours(neighbours) {
+    const result = []
+
+    console.log("neighbours", neighbours)
   }
 
   getGrassBlock(x, y, z) {
@@ -236,7 +259,7 @@ class Chunk {
     if(placeHolder) {
       this.removeBlock(placeHolder.x, placeHolder.y, placeHolder.z)
     }
-
+    
     const { instance: prevInstance } = this.voxels[x][y][z]
     this.voxels[x][y][z] = new Block(TYPE_EMPTY, true, false, prevInstance)
   }
@@ -308,15 +331,6 @@ class Chunk {
                   if(n && n.instance && n.type === TYPE_GRASS) {
                     const {x, y, z} = getXYZ(n.instance.absolutePosition)
                     this.updateGrassBlock(x, y, z)
-
-                    const neighbours2 = this.getNeighbours(x, y, z)
-
-                    for(const n2 of neighbours2) {
-                      if(n2 && n2.instance && n2.type === TYPE_GRASS) {
-                        const { x, y, z } = getXYZ(n2.instance.absolutePosition)
-                        this.updateGrassBlock(x,y,z)
-                      }
-                    }
                   }
                 }
               }
@@ -347,23 +361,12 @@ class Chunk {
   
                 for(const n of neighbours) {
                   if(n && n.instance && n.type === TYPE_GRASS) {
-                    const {x, y, z} = getXYZ(n.instance.absolutePosition)
-                    this.updateGrassBlock(x, y, z)
-                    
-                    const neighbours2 = this.getNeighbours(x, y, z)
-
-                    for(const n2 of neighbours2) {
-                      if(n2 && n2.instance && n2.type === TYPE_GRASS) {
-                        const { x, y, z } = getXYZ(n2.instance.absolutePosition)
-                        this.updateGrassBlock(x,y,z)
-                      }
-                    }
+                    const { x: nx, y: ny, z: nz } = getXYZ(n.instance.absolutePosition)
+                    this.updateGrassBlock(nx, ny, nz)
                   }
                 }
               }
             }
-            
-            
             // UPDATE VOXEL BELOW
             if(y !== 0 && this.voxels[x][y-1][z].instance && !this.voxels[x][y][z].placeHolder) {
               if(this.voxels[x][y-1][z].instance.material.id !== 'dirtBottom') {
@@ -387,7 +390,6 @@ class Chunk {
               }
             }
           }
-
           // VOXEL NEEDS REMOVED
           if(this.voxels[x][y][z].type === TYPE_EMPTY && this.voxels[x][y][z].instance) {
             // UPDATE BLOCK
@@ -413,7 +415,6 @@ class Chunk {
                 }
               }
             }
-
           }
         }
       }

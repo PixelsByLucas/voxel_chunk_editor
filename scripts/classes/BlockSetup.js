@@ -174,7 +174,6 @@ class BlockSetup {
       this.blockOptions.faceUV.grass = grassFaceUV
       this.blockOptions.faceUV.grassPH = grassFaceUV
 
-      // done vvv
     let grass4FaceUV = new Array(6)
       grass4FaceUV[0] = new Babylon.Vector4(2/columns, 0/rows, (2+1)/columns, (0+1)/rows)
       grass4FaceUV[1] = new Babylon.Vector4(0/columns, 2/rows, (0+1)/columns, (2+1)/rows)
@@ -187,7 +186,6 @@ class BlockSetup {
       this.blockOptions.faceUV.grass4 = grass4FaceUV
       this.blockOptions.faceUV.grass4PH = grass4FaceUV
 
-      // done vvv
       let grass1aFaceUV = new Array(6)
       //end face 
       grass1aFaceUV[0] = new Babylon.Vector4(1/columns, 1/rows, (1+1)/columns, (1+1)/rows)
@@ -203,7 +201,6 @@ class BlockSetup {
 
       this.blockOptions.faceUV.grass1a = grass1aFaceUV
 
-    // done vvv
     let grass1bFaceUV = new Array(6)
 
       grass1bFaceUV[0] = new Babylon.Vector4(1/columns, 1/rows, (1+1)/columns, (1+1)/rows)
@@ -223,8 +220,6 @@ class BlockSetup {
       grass1cFaceUV[0] = new Babylon.Vector4(1/columns, 0/rows, (1+1)/columns, (0+1)/rows)
       // end face
       grass1cFaceUV[1] = new Babylon.Vector4(0/columns, 1/rows, (0+1)/columns, (1+1)/rows)
-
-      // back STOPPED HERE vvv
       grass1cFaceUV[2] = new Babylon.Vector4(0/columns, 0/rows, (0+1)/columns, (0+1)/rows)
 
       // front
@@ -253,9 +248,8 @@ class BlockSetup {
       // RIGHT
       let grass3aFaceUV = new Array(6)
       grass3aFaceUV[0] = new Babylon.Vector4(2/columns, 0/rows, (2+1)/columns, (0+1)/rows)
-      // outward face vvv (correct)
+      // outward face
       grass3aFaceUV[1] = new Babylon.Vector4(0/columns, 0/rows, (0+1)/columns, (0+1)/rows)
-      // not done vv
       grass3aFaceUV[2] = new Babylon.Vector4((2+1)/columns, (0+1)/rows, 2/columns, 0/rows)
       grass3aFaceUV[3] = new Babylon.Vector4((2+1)/columns, (0+1)/rows, 2/columns, 0/rows)
       grass3aFaceUV[4] = new Babylon.Vector4(0/columns, 1/rows, (0+1)/columns, (1+1)/rows)
@@ -289,7 +283,6 @@ class BlockSetup {
       
     // FRONT
     let grass3dFaceUV = new Array(6)
-      //face done 
       grass3dFaceUV[0] = new Babylon.Vector4(1/columns, 1/rows, (1+1)/columns, (1+1)/rows)
       grass3dFaceUV[1] = new Babylon.Vector4(1/columns, 1/rows, (1+1)/columns, (1+1)/rows)
       grass3dFaceUV[2] = new Babylon.Vector4(1/columns, 1/rows, (1+1)/columns, (1+1)/rows)
@@ -396,7 +389,6 @@ class BlockSetup {
     this.blockTypes.forEach((block, index) => {
       this.list[index] = new Babylon.MeshBuilder.CreateBox(block, this.getBlockOptions(block), this.scene)
       this.list[index].setEnabled(false)
-      console.log(this.list[index])
       switch (block) {
         case 'dirtTop': 
           this.list[index].material = this.materials.dirtTop

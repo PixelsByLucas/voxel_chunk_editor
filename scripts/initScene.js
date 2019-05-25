@@ -116,6 +116,7 @@ function initScene() {
             getVoxelFromFace(faceId, absolutePosition)
             
             if(target) {
+              console.log("target", target)
               chunk.addVoxel(target, false, state.getBlockType())
               chunk.update()
             }
@@ -123,6 +124,7 @@ function initScene() {
           // RIGHT CLICK
           if(eventData.event.button === 2) {
             const coords = getXYZ(absolutePosition)
+            debugger
             chunk.removeVoxel(coords.x, coords.y, coords.z)
             chunk.update()
           }
