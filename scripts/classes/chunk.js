@@ -13,8 +13,6 @@ class Chunk {
       lastTarget: undefined
     }
 
-
-
     for(let x = 0; x < CHUNK_SIZE; x++) {
       this.voxels[x] = []
 
@@ -98,14 +96,7 @@ class Chunk {
         result[3] = null
       }
     }
-    
     return result
-  }
-
-  getNeighboursNeighbours(neighbours) {
-    const result = []
-
-    console.log("neighbours", neighbours)
   }
 
   getGrassBlock(x, y, z) {
@@ -225,6 +216,11 @@ class Chunk {
 
   addVoxel(target, isPlaceHolder, type) {
     const {x, y, z} = target
+    // prevents double placement of blocks
+    if(this.voxels[x][y][z].instance && !this.voxels[x][y][z].placeHolder) { 
+      return 
+    }
+
     if(isPlaceHolder) {
       const { lastTarget } = this.placeHolder
 
@@ -247,7 +243,7 @@ class Chunk {
 
     if(!isPlaceHolder) {
       if(this.voxels[x][y][z].placeHolder) {
-        this.voxels[x][y][z].instance.dispose()
+        this.removeBlock(x, y, z)
         this.placeHolder.lastTarget = undefined
       }
       this.voxels[x][y][z] = new Block(type, true, false)
@@ -258,6 +254,7 @@ class Chunk {
     const placeHolder = this.getActivePlaceHolder()
     if(placeHolder) {
       this.removeBlock(placeHolder.x, placeHolder.y, placeHolder.z)
+      this.placeHolder.lastTarget = undefined
     }
     
     const { instance: prevInstance } = this.voxels[x][y][z]
@@ -284,9 +281,9 @@ class Chunk {
 
           // VOXEL NEEDS ADDED
           if(this.voxels[x][y][z].type !== TYPE_EMPTY && !this.voxels[x][y][z].instance) {
-            // DIRT
+            // ADD DIRT
             if(this.voxels[x][y][z].type === TYPE_DIRT) {
-              // UPDATE VOXEL
+              // UPDATE VOXEL ITSELF
               if(y === 15 || this.voxels[x][y + 1][z].type === TYPE_EMPTY) {
                 // CREATE PLACEHOLDER DIRTTOP
                 if(this.voxels[x][y][z].placeHolder) {
@@ -296,8 +293,7 @@ class Chunk {
 
                   this.voxels[x][y][z] = new Block(TYPE_DIRT, false, true, instance)
 
-
-                  // CREATE DIRTTOP
+                // else CREATE DIRTTOP
                 } else {
                   const instance = this.blocks.list[0].createInstance(''+x*100+y*10+z)
                   instance.position = new Babylon.Vector3(x * 16, y * 16 ,z * 16)
@@ -306,7 +302,7 @@ class Chunk {
                 }
               } else {
 
-                // CREATE PLACEHOLDER DIRTBOTTOM
+                // else CREATE PLACEHOLDER DIRTBOTTOM
                 if(this.voxels[x][y][z].placeHolder) {
                   const instance = this.blocks.list[3].createInstance(''+x*100+y*10+z)
                   instance.position = new Babylon.Vector3(x * 16, y * 16 ,z * 16)
@@ -314,7 +310,7 @@ class Chunk {
 
                   this.voxels[x][y][z] = new Block(TYPE_DIRT, false, true, instance)
 
-                // CREATE DIRTBOTTOM
+                // else CREATE DIRTBOTTOM
                 } else {
                   const instance = this.blocks.list[1].createInstance(''+x*100+y*10+z)
                   instance.position = new Babylon.Vector3(x * 16, y * 16 ,z * 16)
@@ -335,9 +331,9 @@ class Chunk {
                 }
               }
             }
-            // GRASS
+            // else ADD GRASS
             if(this.voxels[x][y][z].type === TYPE_GRASS) {
-              // UPDATE VOXEL
+              // UPDATE VOXEL ITSELF
               if(this.voxels[x][y][z].placeHolder) {
                 const instance = this.blocks.list[7].createInstance(''+x*100+y*10+z)
                 instance.position = new Babylon.Vector3(x * 16, y * 16 ,z * 16)
@@ -392,7 +388,7 @@ class Chunk {
           }
           // VOXEL NEEDS REMOVED
           if(this.voxels[x][y][z].type === TYPE_EMPTY && this.voxels[x][y][z].instance) {
-            // UPDATE BLOCK
+            // UPDATE VOXEL ITSELF
             this.removeBlock(x, y, z)
 
             // UPDATE VOXEL BELOW
@@ -404,7 +400,8 @@ class Chunk {
                 this.voxels[x][y-1][z].addInstance(instance)
               }
             }
-
+            
+            // UPDATE NEIGHBOURS
             if(!this.voxels[x][y][z].placeHolder) {
               const neighbours = this.getNeighbours(x, y, z)
 

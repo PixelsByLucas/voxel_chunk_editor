@@ -116,17 +116,17 @@ function initScene() {
             getVoxelFromFace(faceId, absolutePosition)
             
             if(target) {
-              console.log("target", target)
               chunk.addVoxel(target, false, state.getBlockType())
               chunk.update()
             }
           }
           // RIGHT CLICK
           if(eventData.event.button === 2) {
-            const coords = getXYZ(absolutePosition)
-            debugger
-            chunk.removeVoxel(coords.x, coords.y, coords.z)
-            chunk.update()
+            if(eventData.pickInfo.pickedMesh.id !== 'groundMesh') {
+              const coords = getXYZ(absolutePosition)
+              chunk.removeVoxel(coords.x, coords.y, coords.z)
+              chunk.update()
+            }
           }
         }
       }
@@ -148,7 +148,7 @@ function initScene() {
 
           if(activePlaceHolder && chunk.getVoxel(x, y, z).placeHolder) {
             chunk.removeBlock(x, y, z)
-            // chunk.update()
+            chunk.placeHolder.lastTarget = undefined;
           }
         }
       }
@@ -171,7 +171,6 @@ function initScene() {
       }
     }
   )
-  // scene.createOrUpdateSelectionOctree()
 
   window.addEventListener('resize', function() {
     engine.resize()

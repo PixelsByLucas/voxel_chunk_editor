@@ -5,6 +5,7 @@
   // BACK: 2-3
   // RIGHT: 4-5
   // LEFT: 6-7
+
 function getVoxelFromFace(faceId, absolutePosition) {
   if(typeof faceId !== 'number' || !absolutePosition) { return null }
 
@@ -73,7 +74,6 @@ function objectsHaveSameVal(obj1, obj2) {
   for(prop in obj2) {
     if (obj1[prop] === undefined || obj2[prop] !== obj1[prop]) return false
   }
-  
   return true
 }
 

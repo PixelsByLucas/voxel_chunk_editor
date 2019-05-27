@@ -35,10 +35,6 @@ class State {
   getBlockType() {
     return state.blockType
   }
-
-  initCameras(cameras) {
-    state.cameras = cameras.map()
-  }
 }
 
 module.exports = State
