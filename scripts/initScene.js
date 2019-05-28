@@ -42,11 +42,17 @@ function initScene() {
     camera1.setTarget
 
   // LIGHT
-  const light = new Babylon.HemisphericLight("light1", new Babylon.Vector3(0, 1, 0), scene)
-  light.intensity = 1.0
 
+  // hemispheric light
+  const lightHem = new Babylon.HemisphericLight("lightHem", new Babylon.Vector3(0, 1, 0), scene)
+  lightHem.intensity = 1.5
+
+  
+  // point light
+  const lightPoint = new Babylon.PointLight('lightPoint', new Babylon.Vector3(128, 1000, 128), scene)
+  
+  // set background color
   scene.clearColor =  new Babylon.Color3(0.08, 0.08, 0.08)
-
   
   // BLOCKS
   const blocks = new BlockSetup(scene)
